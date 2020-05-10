@@ -1,0 +1,55 @@
+package com.example.memall;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+import android.content.Intent;
+import android.os.Bundle;
+import android.util.Log;
+import android.widget.TextView;
+
+import com.example.memall.Models.GroceryItem;
+
+import org.w3c.dom.Text;
+
+import java.util.ArrayList;
+
+public class ShowItemsByCategoryActivity extends AppCompatActivity {
+    private static final String TAG = "ShowItemsByCategoryActi";
+
+    private TextView txtName;
+    private RecyclerView recyclerView;
+
+    private GroceryItemAdapter adapter;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_show_items_by_categoriy);
+
+        initViews();
+
+        adapter = new GroceryItemAdapter(this);
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new GridLayoutManager(this,2));
+
+        try{
+            Intent intent = getIntent();
+            String category = intent.getStringExtra("category");
+            Utils utils = new Utils(this);
+            ArrayList<GroceryItem> items = utils.getItemByCategory(category);
+            adapter.setItems(items);
+            txtName.setText(category.toUpperCase().charAt(0) + category.substring(1));
+        }catch (NullPointerException e){
+            e.printStackTrace();
+        }
+    }
+
+    private void initViews() {
+        Log.d(TAG, "initViews: started");
+        txtName = (TextView) findViewById(R.id.txtCategory);
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+    }
+}
